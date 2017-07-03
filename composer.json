@@ -1,0 +1,21 @@
+{
+  "name": "brrc",
+  "description": "brrc import",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/kscreamy/import"
+    }
+  ],
+  "require": {
+    "php" : ">=5.6",
+    "ext-curl": "*",
+    "symfony/console": "~v3.3",
+    "kscreamy/import": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Screamy\\BrrcImport\\": "src/"
+    }
+  }
+}

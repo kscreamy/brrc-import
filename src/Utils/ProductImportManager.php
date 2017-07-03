@@ -37,6 +37,7 @@ class ProductImportManager
 
         $channel = curl_init();
         curl_setopt($channel, CURLOPT_URL, $url);
+
         curl_setopt($channel, CURLOPT_FOLLOWLOCATION, $url);
 
         $data = curl_exec($channel);

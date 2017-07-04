@@ -1,5 +1,9 @@
 <?php
+
 namespace Screamy\BrrcImport\Utils;
+
+use Screamy\BrrcImport\Exception\ProductNotFoundException;
+use Screamy\PriceImporter\Model\Product;
 
 /**
  * Class ProductImportManager
@@ -8,52 +12,21 @@ namespace Screamy\BrrcImport\Utils;
 class ProductImportManager
 {
     /**
-     * @var string
+     * @param string $sku
+     * @param array $prices
+     * @throws ProductNotFoundException
+     * @throws \Exception
      */
-    private $urlPattern = 'http://brrc.ru/api/v1.0/?cmd=getbrandproducts&key=%s&brandid=%u&type=csv';
-
-    /**
-     * @var string
-     */
-    private $secret;
-
-    /**
-     * ProductImportManager constructor.
-     * @param string $secret
-     */
-    public function __construct($secret)
+    public function importProductPrices($sku, array $prices)
     {
-        $this->secret = $secret;
+
     }
 
     /**
-     * @param int $brandId
-     * @param string $outputFilePath
+     * @param Product $product
      * @throws \Exception
      */
-    public function importPricesByBrandId($brandId, $outputFilePath)
+    public function importProduct(Product $product)
     {
-        $url = sprintf($this->urlPattern, $this->secret, $brandId);
-
-        $channel = curl_init();
-        curl_setopt($channel, CURLOPT_URL, $url);
-
-        curl_setopt($channel, CURLOPT_FOLLOWLOCATION, $url);
-
-        $data = curl_exec($channel);
-        $error = curl_error($channel);
-        curl_close($channel);
-
-        if ($error) {
-            throw new \Exception($error);
-        }
-
-        $file = fopen($outputFilePath, "w+");
-
-        if (!$file) {
-            throw new \Exception('Error opening file ' . $outputFilePath . ' for writing');
-        }
-        fputs($file, $data);
-        fclose($file);
     }
 }

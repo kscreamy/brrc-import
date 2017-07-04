@@ -2,10 +2,12 @@
 
 namespace Screamy\BrrcImport\Command;
 
+use Screamy\PriceImporter\Mapper\ProductMapper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Class ImportProductPricesCommand
@@ -13,10 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ImportProductPricesCommand extends Command
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    use ContainerAwareTrait;
 
     protected function configure()
     {
@@ -30,13 +29,14 @@ class ImportProductPricesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $filePath = $input->getArgument('filepath');
-    }
 
-    /**
-     * {@inheritdoc}
+        /**
+         * @var ProductMapper $productMapper
+         */
+        $productMapper = $this->container->get('screamy.brrc_import.product_mapper');
 
-    public function emitProducts(ProductIterator $products)
-    {
+        //$products = $productMapper->ma
+        /*
         foreach($products as $product)
         {
             if ($this->productExists($product->getSku())) {
@@ -45,6 +45,7 @@ class ImportProductPricesCommand extends Command
                 $this->importProduct($product);
             }
         }
+        */
     }
-     */
+
 }

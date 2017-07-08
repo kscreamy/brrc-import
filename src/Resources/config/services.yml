@@ -1,0 +1,37 @@
+imports:
+    - { resource: mapping.yml }
+
+#parameters:
+  #screamy.brrc_import.secret_key: secret_key
+
+services:
+
+#download
+  screamy.brrc_import.utils.product_download_manager:
+    class: Screamy\BrrcImport\Utils\ProductDownloadManager
+    arguments:
+      - '%screamy.brrc_import.secret_key%'
+
+  screamy.brrc_import.utils.category_download_manager:
+    class: Screamy\BrrcImport\Utils\CategoryDownloadManager
+    arguments:
+      - '%screamy.brrc_import.secret_key%'
+
+#import
+  screamy.brrc_import.product_mapper:
+    class: Screamy\PriceImporter\Mapper\ProductMapper
+    arguments:
+      - '@screamy.brrc_import.product_mapping'
+
+  screamy.brrc_import.product_details_mapper:
+    class: Screamy\PriceImporter\Mapper\ProductMapper
+    arguments:
+      - '@screamy.brrc_import.product_details_mapping'
+
+  screamy.brrc_import.product_iterator_provider:
+    class: Screamy\PriceImporter\Parser\CSVIteratorProvider
+    arguments:
+      - ';'
+
+  screamy.brrc_import.product_import_manager:
+    class: Screamy\BrrcImport\Utils\ProductImportManager

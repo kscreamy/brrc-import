@@ -7,7 +7,7 @@ namespace Screamy\BrrcImport\Utils;
  */
 class CategoryDownloadManager
 {
-    use DownloadTrait;
+    use DownloadTrait, CsvValidationTrait;
     /**
      * @var string
      */
@@ -36,6 +36,8 @@ class CategoryDownloadManager
         $url = sprintf($this->urlPattern, $this->secret);
 
         $data = $this->downloadIntoMemory($url);
+
+        $this->validateCsv($data);
 
         $file = fopen($outputFilePath, "a+");
 

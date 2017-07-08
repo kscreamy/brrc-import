@@ -8,6 +8,7 @@ use Screamy\PriceImporter\Model\Product;
 /**
  * Class ProductImportManager
  * @package Screamy\BrrcImport\Utils
+ * todo move to doctrine integration bundle
  */
 class ProductImportManager
 {
@@ -19,7 +20,7 @@ class ProductImportManager
      */
     public function importProductPrices($sku, array $prices)
     {
-
+        throw new ProductNotFoundException();
     }
 
     /**
@@ -28,5 +29,18 @@ class ProductImportManager
      */
     public function importProduct(Product $product)
     {
+        //postpone if not excluded
+        $pointer = fopen('upload/new_products.csv', 'a+');
+        if (!$pointer) {
+            throw new \Exception();
+        }
+        fputs($pointer, $product->getId()."\n");
+
+        fclose($pointer);
+    }
+
+    public function importProductDetails(Product $product)
+    {
+
     }
 }

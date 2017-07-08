@@ -2,7 +2,6 @@
 
 namespace Screamy\BrrcImport\Command;
 
-use Screamy\BrrcImport\Exception\ProductNotFoundException;
 use Screamy\BrrcImport\Utils\ProductImportManager;
 use Screamy\PriceImporter\Mapper\ProductIterator;
 use Screamy\PriceImporter\Mapper\ProductMapper;
@@ -14,17 +13,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
- * Class ImportProductPricesCommand
+ * Class ImportProductDetailsCommand
  * @package Screamy\BrrcImport\Command
  */
-class ImportProductPricesCommand extends Command
+class ImportProductDetailsCommand extends Command
 {
     use ContainerAwareTrait;
 
     protected function configure()
     {
-        $this->setName('screamy:brrc:product-price-import')
-            ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with product prices');
+        $this->setName('screamy:brrc:product-details-import')
+            ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with product details');
     }
 
     /**
@@ -33,11 +32,10 @@ class ImportProductPricesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $filePath = $input->getArgument('filepath');
-
         /**
          * @var ProductMapper $productMapper
          */
-        $productMapper = $this->container->get('screamy.brrc_import.product_mapper');
+        $productMapper = $this->container->get('screamy.brrc_import.product_details_mapper');
 
         /**
          * @var IteratorProviderInterface $iteratorProvider
@@ -52,11 +50,7 @@ class ImportProductPricesCommand extends Command
         $productImportManager = $this->container->get('screamy.brrc_import.product_import_manager');
 
         foreach ($products as $product) {
-            try {
-                $productImportManager->importProductPrices($product->getSku(), $product->getPrices());
-            } catch (ProductNotFoundException $e) {
-                $productImportManager->importProduct($product);
-            }
+            $productImportManager->importProductDetails($product);
         }
     }
 }

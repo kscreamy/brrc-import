@@ -1,0 +1,92 @@
+parameters:
+  screamy.brrc_import.product_prices_mapping_collection:
+    - '@screamy.brrc_import.product_price_mapping'
+
+  screamy.brrc_import.product_details_prices_mapping_collection:
+    - '@screamy.brrc_import.product_details_price_mapping'
+
+  screamy.brrc_import.product_properties_mapping_collection:
+    - '@screamy.brrc_import.brand_property_mapping'
+    - '@screamy.brrc_import.scale_property_mapping'
+    - '@screamy.brrc_import.equipment_property_mapping'
+    - '@screamy.brrc_import.engine_property_mapping'
+    - '@screamy.brrc_import.rocket_property_mapping'
+    - '@screamy.brrc_import.size_property_mapping'
+    - '@screamy.brrc_import.tank_property_mapping'
+
+services:
+  screamy.brrc_import.product_price_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - ~
+      - '[5]'
+
+  screamy.brrc_import.product_details_price_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - '[26]'
+      - '[27]'
+
+
+  screamy.brrc_import.product_mapping:
+    class: Screamy\PriceImporter\Utils\ProductMapping
+    properties:
+      idPath: '[0]'
+      skuPath: '[3]'
+      pricesPathCollection: '%screamy.brrc_import.product_prices_mapping_collection%'
+
+  screamy.brrc_import.product_details_mapping:
+    class: Screamy\PriceImporter\Utils\ProductMapping
+    properties:
+      idPath: '[1]'
+      titlePath: '[3]'
+      categoryIdPath: '[7]'
+      skuPath: '[9]'
+      countPath: '[25]'
+      pricesPathCollection: '%screamy.brrc_import.product_details_prices_mapping_collection%'
+      propertiesPathCollection: '%screamy.brrc_import.product_properties_mapping_collection%'
+
+
+  screamy.brrc_import.brand_property_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - '[10]'
+      - '[11]'
+
+  screamy.brrc_import.scale_property_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - '[12]'
+      - '[13]'
+
+  screamy.brrc_import.equipment_property_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - '[14]'
+      - '[15]'
+
+  screamy.brrc_import.engine_property_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - '[16]'
+      - '[17]'
+
+
+  screamy.brrc_import.rocket_property_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - '[18]'
+      - '[19]'
+
+  screamy.brrc_import.size_property_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - '[20]'
+      - '[21]'
+
+
+  screamy.brrc_import.tank_property_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - '[22]'
+      - '[23]'

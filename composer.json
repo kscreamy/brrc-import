@@ -11,6 +11,9 @@
     "php" : ">=5.6",
     "ext-curl": "*",
     "symfony/console": "~v3.3",
+    "symfony/config": "~3.3",
+    "symfony/yaml": "~3.3",
+    "symfony/dependency-injection": "~3.3",
     "kscreamy/import": "dev-master"
   },
   "autoload": {

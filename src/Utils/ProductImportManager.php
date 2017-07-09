@@ -2,30 +2,48 @@
 
 namespace Screamy\BrrcImport\Utils;
 
-use Screamy\BrrcImport\Exception\ProductNotFoundException;
+use Screamy\PriceImporter\Exception\ProductNotFoundException;
 use Screamy\PriceImporter\Model\Product;
+use Screamy\PriceImporter\Utils\ProductImportManagerInterface as ProductImporter;
+use Screamy\PriceImporter\Utils\ProductPricesImportManagerInterface as PricesImporter;
 
 /**
  * Class ProductImportManager
  * @package Screamy\BrrcImport\Utils
- * todo move to doctrine integration bundle
  */
-class ProductImportManager
+class ProductImportManager implements ProductImporter, PricesImporter
 {
     /**
-     * @param string $sku
-     * @param array $prices
-     * @throws ProductNotFoundException
-     * @throws \Exception
+     * @var ProductImporter
      */
-    public function importProductPrices($sku, array $prices)
+    private $productImporter;
+
+    /**
+     * @var PricesImporter
+     */
+    private $pricesImporter;
+
+    /**
+     * ProductImportManager constructor.
+     * @param ProductImporter $productImporter
+     * @param PricesImporter $pricesImporter
+     */
+    public function __construct(ProductImporter $productImporter, PricesImporter $pricesImporter)
     {
-        throw new ProductNotFoundException();
+        $this->productImporter = $productImporter;
+        $this->pricesImporter = $pricesImporter;
     }
 
     /**
-     * @param Product $product
-     * @throws \Exception
+     * {@inheritdoc}
+     */
+    public function importProductPrices($sku, array $prices)
+    {
+        $this->pricesImporter->importProductPrices($sku, $prices);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function importProduct(Product $product)
     {
@@ -34,13 +52,16 @@ class ProductImportManager
         if (!$pointer) {
             throw new \Exception();
         }
-        fputs($pointer, $product->getId()."\n");
+        fputs($pointer, $product->getId() . "\n");
 
         fclose($pointer);
     }
 
+    /**
+     * @param Product $product
+     */
     public function importProductDetails(Product $product)
     {
-
+        $this->productImporter->importProduct($product);
     }
 }

@@ -7,6 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Class ImportCategoriesCommand
@@ -14,24 +15,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ImportCategoriesCommand extends Command
 {
-    /**
-     * @var CategoryImporter
-     */
-    private $categoryImporter;
+    use ContainerAwareTrait;
 
-    /**
-     * ImportCategoriesCommand constructor.
-     * @param CategoryImporter $categoryImporter
-     */
-    public function __construct(CategoryImporter $categoryImporter)
-    {
-        parent::__construct();
-        $this->categoryImporter = $categoryImporter;
-    }
 
     protected function configure()
     {
-        $this->setName('screamy:brrc:categories-import')
+        $this->setName('screamy:brrc:categories:import')
             ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with categories');
     }
 
@@ -42,6 +31,6 @@ class ImportCategoriesCommand extends Command
     {
         $filePath = $input->getArgument('filepath');
 
-        $this->categoryImporter->importCategories($filePath);
+        $this->container->get('screamy.brrc_import.category_import_manager')->importCategories($filePath);
     }
 }

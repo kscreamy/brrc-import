@@ -19,7 +19,7 @@ class DownloadProductDetailsCommand extends Command
 
     protected function configure()
     {
-        $this->setName('screamy:brrc:download-product-details')
+        $this->setName('screamy:brrc:product:download-details')
             ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with product ids')
             ->addArgument('details-filepath', InputArgument::REQUIRED,
                 'Path to file where product details will be stored');

@@ -22,7 +22,7 @@ class ImportProductDetailsCommand extends Command
 
     protected function configure()
     {
-        $this->setName('screamy:brrc:product-details-import')
+        $this->setName('screamy:brrc:product:details-import')
             ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with product details');
     }
 

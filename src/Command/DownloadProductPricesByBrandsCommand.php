@@ -18,7 +18,7 @@ class DownloadProductPricesByBrandsCommand extends Command
 
     protected function configure()
     {
-        $this->setName('screamy:brrc:download-prices-by-brands')
+        $this->setName('screamy:brrc:prices:download-by-brands')
             ->addArgument('filepath', InputArgument::REQUIRED, 'Output file')
             ->addArgument('brands', InputArgument::IS_ARRAY, 'Array of product brands');
     }

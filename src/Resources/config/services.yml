@@ -23,6 +23,14 @@ services:
     arguments:
       - '@screamy.brrc_import.product_mapping'
 
+
+  screamy.brrc_import.category_mapper:
+    class: Screamy\PriceImporter\Mapper\CategoryMapper
+    arguments:
+      - '[0]'
+      - '[1]'
+      - '[2]'
+
   screamy.brrc_import.product_details_mapper:
     class: Screamy\PriceImporter\Mapper\ProductMapper
     arguments:
@@ -32,6 +40,3 @@ services:
     class: Screamy\PriceImporter\Parser\CSVIteratorProvider
     arguments:
       - ';'
-
-  screamy.brrc_import.product_import_manager:
-    class: Screamy\BrrcImport\Utils\ProductImportManager

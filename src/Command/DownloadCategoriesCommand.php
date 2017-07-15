@@ -19,7 +19,7 @@ class DownloadCategoriesCommand extends Command
 
     protected function configure()
     {
-        $this->setName('screamy:brrc:categories-download')
+        $this->setName('screamy:brrc:categories:download')
             ->addArgument('filepath', InputArgument::REQUIRED, 'Path to output file');
     }
 

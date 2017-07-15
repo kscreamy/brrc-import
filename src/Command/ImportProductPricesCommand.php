@@ -23,7 +23,7 @@ class ImportProductPricesCommand extends Command
 
     protected function configure()
     {
-        $this->setName('screamy:brrc:product-price-import')
+        $this->setName('screamy:brrc:prices:import')
             ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with product prices');
     }
 

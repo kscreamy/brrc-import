@@ -12,7 +12,11 @@ services:
     arguments:
       - '[26]'
       - '[27]'
-
+  screamy.brrc_import.product_details_supplier_price_mapping:
+    class: Screamy\PriceImporter\Utils\KeyValueMapping
+    arguments:
+      - '[28]'
+      - '[29]'
 
   screamy.brrc_import.product_mapping:
     class: Screamy\PriceImporter\Utils\ProductMapping
@@ -27,13 +31,15 @@ services:
     properties:
       idPath: '[1]'
       titlePath: '[3]'
-      imagePathPath: '[5]'
+      mainImagePathPath: '[5]'
       categoryIdPath: '[7]'
       skuPath: '[9]'
       countPath: '[25]'
       brandPath: '[11]'
+      additionalImagesPath: '[31]'
       pricesPathCollection:
         - '@screamy.brrc_import.product_details_price_mapping'
+        - '@screamy.brrc_import.product_details_supplier_price_mapping'
       propertiesPathCollection:
         - '@screamy.brrc_import.scale_property_mapping'
         - '@screamy.brrc_import.equipment_property_mapping'

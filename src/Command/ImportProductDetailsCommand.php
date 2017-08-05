@@ -22,10 +22,8 @@ class ImportProductDetailsCommand extends Command
 
     protected function configure()
     {
-        $this->setName('screamy:brrc:product:download-details')
-            ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with product ids')
-            ->addArgument('details-filepath', InputArgument::REQUIRED,
-                'Path to file where product details will be stored');
+        $this->setName('screamy:brrc:product-details-import')
+            ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with product ids');
     }
 
     /**

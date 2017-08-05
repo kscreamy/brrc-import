@@ -80,12 +80,17 @@ class ProductDownloadManager
             'Тип танка',
             'Оставшееся количество',
             'Розничная цена',
-            'Оптовая цена'
+            'Оптовая цена',
+            'more_images'
         ];
 
         foreach (str_getcsv($data, ';') as $fieldNum => $field) {
             if (!isset($fieldTitles[$fieldNum])) continue;
-            $productDetails[] = $fieldTitles[$fieldNum];
+            $fieldTitle = $fieldTitles[$fieldNum];
+            if ($fieldTitle == 'more_images') {
+                $field = explode(',', $field);
+            }
+            $productDetails[] = $fieldTitle;
             $productDetails[] = $field;
         }
 

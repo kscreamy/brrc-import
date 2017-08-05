@@ -2,7 +2,8 @@
 
 namespace Screamy\BrrcImport\Command;
 
-use Screamy\PriceImporter\Utils\CategoryImporter;
+use Screamy\PriceImporter\Utils\CategoryImportManager;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,6 +32,21 @@ class ImportCategoriesCommand extends Command
     {
         $filePath = $input->getArgument('filepath');
 
-        $this->container->get('screamy.brrc_import.category_import_manager')->importCategories($filePath);
+        if (!file_exists($filePath)) {
+            $output->writeln('No categories downloaded, exiting');
+            return;
+        }
+
+        try {
+            /**
+             * @var CategoryImportManager $manager
+             */
+            $manager = $this->container->get('screamy.brrc_import.category_import_manager');
+            $manager->importCategories($filePath);
+        } catch (Exception $e) {
+            unlink($filePath);
+            throw $e;
+        }
+        unlink($filePath);
     }
 }

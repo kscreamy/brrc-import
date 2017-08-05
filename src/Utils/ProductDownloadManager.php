@@ -52,10 +52,10 @@ class ProductDownloadManager
 
     /**
      * @param int $id
-     * @param $outputFilePath
+     * @return array
      * @throws \Exception
      */
-    public function downloadProductDetailsById($id, $outputFilePath)
+    public function getProductDetailsById($id)
     {
         $url = sprintf($this->productDetailsUrlPattern, $this->secret, $id);
 
@@ -63,9 +63,7 @@ class ProductDownloadManager
 
         $this->validateCsv($data);
 
-        $file = fopen($outputFilePath, "a+");
-
-        $row = [];
+        $productDetails = [];
 
         $fieldTitles = [
             'ID товара',
@@ -87,14 +85,10 @@ class ProductDownloadManager
 
         foreach (str_getcsv($data, ';') as $fieldNum => $field) {
             if (!isset($fieldTitles[$fieldNum])) continue;
-            $row[] = $fieldTitles[$fieldNum];
-            $row[] = $field;
+            $productDetails[] = $fieldTitles[$fieldNum];
+            $productDetails[] = $field;
         }
 
-        if (!$file) {
-            throw new \Exception('Error opening file ' . $outputFilePath . ' for writing');
-        }
-        fputcsv($file, $row, ';');
-        fclose($file);
+        return $productDetails;
     }
 }

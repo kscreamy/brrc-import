@@ -2,10 +2,10 @@
 
 namespace Screamy\BrrcImport\Command;
 
+use Screamy\BrrcImport\Utils\ProductDownloadManager;
 use Screamy\BrrcImport\Utils\ProductImportManager;
-use Screamy\PriceImporter\Mapper\ProductIterator;
 use Screamy\PriceImporter\Mapper\ProductMapper;
-use Screamy\PriceImporter\Parser\IteratorProviderInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,8 +22,10 @@ class ImportProductDetailsCommand extends Command
 
     protected function configure()
     {
-        $this->setName('screamy:brrc:product:details-import')
-            ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with product details');
+        $this->setName('screamy:brrc:product:download-details')
+            ->addArgument('filepath', InputArgument::REQUIRED, 'Path to file with product ids')
+            ->addArgument('details-filepath', InputArgument::REQUIRED,
+                'Path to file where product details will be stored');
     }
 
     /**
@@ -31,26 +33,40 @@ class ImportProductDetailsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $filePath = $input->getArgument('filepath');
-        /**
-         * @var ProductMapper $productMapper
-         */
-        $productMapper = $this->container->get('screamy.brrc_import.product_details_mapper');
 
-        /**
-         * @var IteratorProviderInterface $iteratorProvider
-         */
-        $iteratorProvider = $this->container->get('screamy.brrc_import.product_iterator_provider');
+        $productIdsFilePath = $input->getArgument('filepath');
 
-        $products = new ProductIterator($iteratorProvider->getIterator($filePath), $productMapper);
-
-        /**
-         * @var ProductImportManager $productImportManager
-         */
-        $productImportManager = $this->container->get('screamy.brrc_import.product_import_manager');
-
-        foreach ($products as $product) {
-            $productImportManager->importProductDetails($product);
+        if (!file_exists($productIdsFilePath)) {
+            $output->writeln('No new products');
+            return;
         }
+
+
+        try {
+            /**
+             * @var ProductDownloadManager $manager
+             */
+            $manager = $this->container->get('screamy.brrc_import.utils.product_download_manager');
+
+            /**
+             * @var ProductMapper $productMapper
+             */
+            $productMapper = $this->container->get('screamy.brrc_import.product_details_mapper');
+
+            /**
+             * @var ProductImportManager $productImportManager
+             */
+            $productImportManager = $this->container->get('screamy.brrc_import.product_import_manager');
+
+            foreach (file($productIdsFilePath) as $productId) {
+                $detailedProductEntry = $manager->getProductDetailsById((int)$productId);
+                $productImportManager->importProductDetails($productMapper->mapToProduct($detailedProductEntry));
+            }
+        } catch (Exception $e) {
+            unlink($productIdsFilePath);
+            throw $e;
+        }
+
+        unlink($productIdsFilePath);
     }
 }

@@ -30,6 +30,10 @@ class DownloadCategoriesCommand extends Command
     {
         $filePath = $input->getArgument('filepath');
 
+        if (file_exists($filePath)) {
+            $output->writeln('Categories are in process, exiting');
+            return;
+        }
         /**
          * @var CategoryDownloadManager $manager
          */

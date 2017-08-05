@@ -2,11 +2,11 @@
 
 namespace Screamy\BrrcImport\Command;
 
-use Screamy\BrrcImport\Exception\ProductNotFoundException;
 use Screamy\BrrcImport\Utils\ProductImportManager;
-use Screamy\PriceImporter\Mapper\ProductIterator;
+use Screamy\PriceImporter\Exception\ProductNotFoundException;
 use Screamy\PriceImporter\Mapper\ProductMapper;
 use Screamy\PriceImporter\Parser\IteratorProviderInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,29 +34,42 @@ class ImportProductPricesCommand extends Command
     {
         $filePath = $input->getArgument('filepath');
 
-        /**
-         * @var ProductMapper $productMapper
-         */
-        $productMapper = $this->container->get('screamy.brrc_import.product_mapper');
-
-        /**
-         * @var IteratorProviderInterface $iteratorProvider
-         */
-        $iteratorProvider = $this->container->get('screamy.brrc_import.product_iterator_provider');
-
-        $products = new ProductIterator($iteratorProvider->getIterator($filePath), $productMapper);
-
-        /**
-         * @var ProductImportManager $productImportManager
-         */
-        $productImportManager = $this->container->get('screamy.brrc_import.product_import_manager');
-
-        foreach ($products as $product) {
-            try {
-                $productImportManager->importProductPrices($product->getSku(), $product->getPrices());
-            } catch (ProductNotFoundException $e) {
-                $productImportManager->importProduct($product);
-            }
+        $idsFilePath = 'web/upload/new_products.csv';
+        if (!file_exists($filePath)) {
+            $output->writeln('No prices downloaded, exiting');
+            return;
         }
+        if (file_exists($idsFilePath)) {
+            $output->writeln('Product details are in process, exiting');
+            return;
+        }
+
+        try {
+            /**
+             * @var ProductMapper $productMapper
+             */
+            $productMapper = $this->container->get('screamy.brrc_import.product_mapper');
+            /**
+             * @var IteratorProviderInterface $iteratorProvider
+             */
+            $iteratorProvider = $this->container->get('screamy.brrc_import.product_iterator_provider');
+            /**
+             * @var ProductImportManager $productImportManager
+             */
+            $productImportManager = $this->container->get('screamy.brrc_import.product_import_manager');
+
+            foreach ($iteratorProvider->getIterator($filePath) as $productPriceEntry) {
+                $product = $productMapper->mapToProduct($productPriceEntry);
+                try {
+                    $productImportManager->importProductPrices($product->getSku(), $product->getPrices());
+                } catch (ProductNotFoundException $e) {
+                    $productImportManager->importProduct($product);
+                }
+            }
+        } catch (Exception $e) {
+            unlink($filePath);
+            throw $e;
+        }
+        unlink($filePath);
     }
 }

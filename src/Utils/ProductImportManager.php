@@ -48,7 +48,7 @@ class ProductImportManager implements ProductImporter, PricesImporter
     public function importProduct(Product $product)
     {
         //postpone if not excluded
-        $pointer = fopen('upload/new_products.csv', 'a+');
+        $pointer = fopen('web/upload/new_products.csv', 'a+');
         if (!$pointer) {
             throw new \Exception();
         }
